@@ -1,0 +1,30 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.TripBuddy" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/tb_primary</item>
+        <item name="colorPrimaryVariant">@color/tb_primary_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/tb_accent</item>
+        <item name="colorSecondaryVariant">@color/tb_primary</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <!-- App surface/background -->
+        <item name="android:windowBackground">@color/tb_bg</item>
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:navigationBarColor">@color/tb_primary_dark</item>
+
+        <!-- Android 12+ splash screen -->
+        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="android:windowSplashScreenBackground">@color/tb_bg</item>
+        <item name="android:windowSplashScreenAnimationDuration">200</item>
+    </style>
+
+    <style name="Theme.TripBuddy.NoActionBar" parent="Theme.TripBuddy">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.TripBuddy.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.TripBuddy.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+</resources>

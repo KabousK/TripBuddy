@@ -1,0 +1,60 @@
+<resources>
+    <string name="app_name">TripBuddy</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">TripBuddy</string>
+    <string name="nav_header_subtitle">travel@tripbuddy.app</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Menu items -->
+    <string name="menu_registration">Registration</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_memories">Memories</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_budget">Budget</string>
+
+    <!-- Home/dashboard content -->
+    <string name="home_welcome">Welcome to TripBuddy Dashboard!</string>
+    <string name="btn_view_gallery">View Gallery</string>
+    <string name="btn_plan_trip">Plan Trip</string>
+    <string name="btn_create_memory">Create Memory</string>
+
+    <!-- Budget / Trip planning -->
+    <string name="budget_title">Plan Trip &amp; Budget</string>
+    <string name="hint_destination">Enter Destination</string>
+    <string name="hint_notes">Enter Notes</string>
+    <string name="hint_start_date">Start date</string>
+    <string name="hint_end_date">End date</string>
+    <string name="hint_visa">Enter Visa Expense</string>
+    <string name="hint_transport">Enter Transport Expense</string>
+    <string name="hint_meals">Enter Meals Expense</string>
+    <string name="hint_custom">Enter Custom Expense</string>
+    <string name="label_activities">Choose Activities</string>
+    <string name="btn_save_trip">Save Trip</string>
+    <string name="btn_confirm_trip">Confirm Trip</string>
+    <string name="summary_title">Trip Budget Summary</string>
+    <string name="summary_destination">Destination: %1$s</string>
+    <string name="summary_dates">Dates: %1$s → %2$s</string>
+    <string name="summary_notes">Notes: %1$s</string>
+    <string name="summary_subtotal">Subtotal: %1$s</string>
+    <string name="summary_discount">Discount: %1$s</string>
+    <string name="summary_final">Final Budget: %1$s</string>
+    <string name="currency_format">R%.2f</string>
+    <string name="toast_trip_saved">Trip saved.</string>
+    <string name="toast_invalid_number">Please enter non-negative numbers.</string>
+
+    <!-- Memories / Media -->
+    <string name="memory_title">Create Memory</string>
+    <string name="hint_caption">Add a caption</string>
+    <string name="btn_pick_photo">Pick Photo</string>
+    <string name="btn_pick_audio">Pick Music</string>
+    <string name="btn_save_memory">Save Memory</string>
+    <string name="btn_play">Play</string>
+    <string name="btn_pause">Pause</string>
+    <string name="btn_stop">Stop</string>
+    <string name="gallery_title">Memories Gallery</string>
+    <string name="edit_memory">Edit Memory</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+</resources>

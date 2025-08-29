@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/tb_bg"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/summary_title"
+        android:textStyle="bold"
+        android:textColor="@color/tb_text"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/tv_dest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/tb_text" />
+
+    <TextView
+        android:id="@+id/tv_dates"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/tb_text" />
+
+    <TextView
+        android:id="@+id/tv_notes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/tb_text" />
+
+    <TextView
+        android:id="@+id/tv_summary_subtotal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textColor="@color/tb_text"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/tv_summary_discount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/tb_text" />
+
+    <TextView
+        android:id="@+id/tv_summary_total"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textColor="@color/tb_text" />
+</LinearLayout>

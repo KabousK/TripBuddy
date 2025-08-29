@@ -1,0 +1,83 @@
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# IDEs & Editors
+.idea/
+*.iml
+.settings/
+.project
+.classpath
+.vscode/
+
+# Gradle
+.gradle/
+**/build/
+**/.gradle/
+
+# Keep Gradle wrapper (do NOT ignore these)
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# Android/NDK
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Local configuration
+local.properties
+*.keystore
+*.jks
+keystore.properties
+*.keystore.properties
+signing.properties
+
+# Logs & reports
+*.log
+*.hprof
+**/reports/
+
+# Databases / caches
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Output APK/AAB
+**/outputs/
+app/release/
+app/debug/
+
+# Java/Kotlin build outputs
+out/
+
+# Temporary files
+*.tmp
+*.temp
+~$*
+
+# Node/Yarn (if present)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Vendor JDKs (ignore bundled JDKs in repo)
+oracleJdk-24/
+oracleJdk-*/
+jdk*/
+openjdk*/
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties

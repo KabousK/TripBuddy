@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.formative_eduv4834254.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_gallery"
+        android:name="com.example.formative_eduv4834254.ui.gallery.GalleryFragment"
+        android:label="@string/menu_gallery"
+        tools:layout="@layout/fragment_gallery" />
+
+
+    <!-- New fragments to represent app flow -->
+    <fragment
+        android:id="@+id/nav_memories"
+        android:name="com.example.formative_eduv4834254.ui.memories.MemoriesFragment"
+        android:label="@string/menu_memories"
+        tools:layout="@layout/fragment_memories" />
+
+    <fragment
+        android:id="@+id/nav_budget"
+        android:name="com.example.formative_eduv4834254.ui.budget.BudgetFragment"
+    android:label="@string/menu_budget"
+    tools:layout="@layout/fragment_budget">
+    <action
+        android:id="@+id/action_budget_to_summary"
+        app:destination="@id/nav_budget_summary" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_registration"
+        android:name="com.example.formative_eduv4834254.ui.registration.RegistrationFragment"
+        android:label="@string/menu_registration"
+        tools:layout="@layout/fragment_registration" />
+
+    <fragment
+        android:id="@+id/nav_budget_summary"
+        android:name="com.example.formative_eduv4834254.ui.summary.BudgetSummaryFragment"
+        android:label="@string/summary_title"
+        tools:layout="@layout/fragment_budget_summary" />
+
+    <fragment
+        android:id="@+id/nav_memory_viewer"
+        android:name="com.example.formative_eduv4834254.ui.gallery.MemoryViewerFragment"
+        android:label="Viewer"
+        tools:layout="@layout/fragment_memory_viewer" />
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="com.example.formative_eduv4834254.ui.settings.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings" />
+</navigation>

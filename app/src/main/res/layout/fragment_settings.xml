@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:orientation="vertical">
+
+    <Switch
+        android:id="@+id/swTheme"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Dark Theme"/>
+
+    <Switch
+        android:id="@+id/swMusic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Background Music"/>
+
+    <Spinner
+        android:id="@+id/spLanguage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSaveLang"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save Language"/>
+
+</LinearLayout>
