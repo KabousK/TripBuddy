@@ -23,6 +23,8 @@ import com.example.formative_eduv4834254.data.Trip;
 import com.example.formative_eduv4834254.data.TripRepository;
 import com.example.formative_eduv4834254.data.SessionManager;
 import com.google.android.material.button.MaterialButton;
+import com.example.formative_eduv4834254.util.BudgetCalculator;
+import com.example.formative_eduv4834254.util.TESManager;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
@@ -35,6 +37,8 @@ public class BudgetFragment extends Fragment {
     private TextInputEditText etDestination, etNotes, etStartDate, etEndDate, etVisa, etTransport, etMeals, etCustom;
     private TextView tvSubtotal, tvDiscount, tvFinal;
     private final List<ActivityItem> activities = new ArrayList<>();
+    private boolean hasSavedThisSession = false;
+    private long currentTripId = -1; // persist id across Save -> Confirm in the same session
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -68,10 +72,20 @@ public class BudgetFragment extends Fragment {
         etMeals.addTextChangedListener(watcher);
         etCustom.addTextChangedListener(watcher);
 
-        MaterialButton btnSave = root.findViewById(R.id.btn_save_trip);
-        MaterialButton btnConfirm = root.findViewById(R.id.btn_confirm);
+    MaterialButton btnSave = root.findViewById(R.id.btn_save_trip);
+    MaterialButton btnConfirm = root.findViewById(R.id.btn_confirm);
         btnSave.setOnClickListener(v -> saveTrip(false));
-        btnConfirm.setOnClickListener(v -> saveTrip(true));
+        btnConfirm.setOnClickListener(v -> {
+            v.setEnabled(false); // guard against rapid double taps
+            saveTrip(true);
+            v.postDelayed(() -> v.setEnabled(true), 600);
+        });
+
+        // If editing an existing trip, prefill
+    if (getArguments() != null && getArguments().containsKey("tripId")) {
+            long id = getArguments().getLong("tripId", -1);
+            if (id != -1 && getContext()!=null) prefillTrip(id);
+        }
 
         recalc();
         return root;
@@ -118,13 +132,10 @@ public class BudgetFragment extends Fragment {
             return;
         }
 
-        double actSum = 0;
-        for (ActivityItem a : activities) if (a.selected) actSum += a.price;
-        double subtotal = actSum + visa + transport + meals + custom;
-
     int tripCount = SessionManager.getTripCount(getContext());
-        double discount = tripCount >= 3 ? subtotal * 0.10 : 0.0;
-        double finalTotal = subtotal - discount;
+    double subtotal = BudgetCalculator.subtotal(activities, visa, transport, meals, custom);
+    double discount = (tripCount >= 3) ? subtotal * 0.10 : 0.0;
+        double finalTotal = BudgetCalculator.total(subtotal, discount);
 
         tvSubtotal.setText(getString(R.string.summary_subtotal, getString(R.string.currency_format, subtotal)));
         tvDiscount.setText(getString(R.string.summary_discount, getString(R.string.currency_format, discount)));
@@ -141,15 +152,32 @@ public class BudgetFragment extends Fragment {
             return;
         }
 
-        double actSum = 0;
-        for (ActivityItem a : activities) if (a.selected) actSum += a.price;
-        double subtotal = actSum + visa + transport + meals + custom;
-    int tripCount = SessionManager.getTripCount(getContext());
-        double discount = tripCount >= 3 ? subtotal * 0.10 : 0.0;
-        double finalTotal = subtotal - discount;
+        // Prevent saving completely empty trips (no destination, no dates, no notes, zero costs, no activities)
+        boolean anyActivity = false; for (ActivityItem a: activities) if (a.selected) { anyActivity = true; break; }
+        boolean hasText = notEmpty(etDestination) || notEmpty(etNotes) || notEmpty(etStartDate) || notEmpty(etEndDate);
+        boolean hasCosts = visa>0 || transport>0 || meals>0 || custom>0;
+        if (!anyActivity && !hasText && !hasCosts) {
+            Toast.makeText(getContext(), R.string.toast_trip_empty, Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        Trip t = new Trip();
-        t.id = System.currentTimeMillis();
+    int tripCount = SessionManager.getTripCount(getContext());
+    double subtotal = BudgetCalculator.subtotal(activities, visa, transport, meals, custom);
+    double discount = (tripCount >= 3) ? subtotal * 0.10 : 0.0;
+    double finalTotal = BudgetCalculator.total(subtotal, discount);
+
+    Trip t;
+    long editId = getArguments()!=null? getArguments().getLong("tripId", -1) : -1;
+    if (editId != -1) {
+        t = TripRepository.getTrip(getContext(), editId);
+        if (t==null) t = new Trip();
+        t.id = editId;
+        currentTripId = editId;
+    } else {
+        t = new Trip();
+        if (currentTripId == -1) currentTripId = System.currentTimeMillis();
+        t.id = currentTripId;
+    }
         t.destination = etDestination.getText() == null ? "" : etDestination.getText().toString().trim();
         t.notes = etNotes.getText() == null ? "" : etNotes.getText().toString().trim();
         t.startDate = etStartDate.getText() == null ? "" : etStartDate.getText().toString().trim();
@@ -158,7 +186,7 @@ public class BudgetFragment extends Fragment {
         t.visa = visa; t.transport = transport; t.meals = meals; t.custom = custom;
         t.subtotal = subtotal; t.discount = discount; t.total = finalTotal;
 
-        TripRepository.saveTrip(getContext(), t);
+    TripRepository.saveTrip(getContext(), t);
         // persist last selections and increment trip count for loyalty
         StringBuilder csv = new StringBuilder();
         for (ActivityItem a : activities) if (a.selected) {
@@ -166,20 +194,46 @@ public class BudgetFragment extends Fragment {
             csv.append(a.name);
         }
         SessionManager.saveLastTrip(getContext(), csv.toString(), visa, transport, meals, custom);
+    // Only count TES/Trip when creating a brand new trip for the first time in this session (not edits)
+    if (editId == -1 && !hasSavedThisSession) {
         SessionManager.incrementTripCount(getContext());
+        TESManager tes = new TESManager(requireContext());
+        tes.addNewTrip();
+        if (discount > 0) tes.addLoyaltyUsed();
+        hasSavedThisSession = true;
+    }
 
         if (!toSummary) {
             Toast.makeText(getContext(), R.string.toast_trip_saved, Toast.LENGTH_SHORT).show();
         } else {
-            Bundle b = new Bundle();
-            b.putString("destination", t.destination);
-            b.putString("start", t.startDate);
-            b.putString("end", t.endDate);
-            b.putString("notes", t.notes);
-            b.putDouble("subtotal", t.subtotal);
-            b.putDouble("discount", t.discount);
-            b.putDouble("total", t.total);
-            NavHostFragment.findNavController(this).navigate(R.id.nav_budget_summary, b);
+            // Confirm: go to Trips list and clear the form for next planning session
+            NavHostFragment.findNavController(this).navigate(R.id.nav_trips);
+            clearForm();
+            SessionManager.clearLastTrip(requireContext());
+            hasSavedThisSession = false; // reset for next plan session
+        }
+        recalc();
+    }
+
+    private boolean notEmpty(TextInputEditText et) { return et.getText()!=null && !et.getText().toString().trim().isEmpty(); }
+
+    private void prefillTrip(long id) {
+        Trip t = TripRepository.getTrip(getContext(), id);
+        if (t == null) return;
+    currentTripId = id;
+        etDestination.setText(t.destination);
+        etNotes.setText(t.notes);
+        etStartDate.setText(t.startDate);
+        etEndDate.setText(t.endDate);
+        etVisa.setText(String.valueOf(t.visa));
+        etTransport.setText(String.valueOf(t.transport));
+        etMeals.setText(String.valueOf(t.meals));
+        etCustom.setText(String.valueOf(t.custom));
+        // restore activities by name
+        for (ActivityItem a : activities) {
+            if (t.activities != null) {
+                for (ActivityItem b : t.activities) if (a.name.equals(b.name) && b.selected) { a.selected = true; break; }
+            }
         }
         recalc();
     }
@@ -196,6 +250,29 @@ public class BudgetFragment extends Fragment {
         etTransport.setText(String.valueOf(SessionManager.getLastTransport(getContext())));
         etMeals.setText(String.valueOf(SessionManager.getLastMeals(getContext())));
         etCustom.setText(String.valueOf(SessionManager.getLastCustom(getContext())));
+    }
+
+    @Override public void onResume() {
+        super.onResume();
+        // If not editing an existing trip, ensure the form is fresh on next app cycle
+        if (getArguments() == null || !getArguments().containsKey("tripId")) {
+            clearForm();
+            hasSavedThisSession = false;
+            currentTripId = -1;
+        }
+    }
+
+    private void clearForm() {
+        if (etDestination!=null) etDestination.setText("");
+        if (etNotes!=null) etNotes.setText("");
+        if (etStartDate!=null) etStartDate.setText("");
+        if (etEndDate!=null) etEndDate.setText("");
+        if (etVisa!=null) etVisa.setText("");
+        if (etTransport!=null) etTransport.setText("");
+        if (etMeals!=null) etMeals.setText("");
+        if (etCustom!=null) etCustom.setText("");
+        for (ActivityItem a : activities) a.selected = false;
+    currentTripId = -1;
     }
 
     private static class PlainWatcher implements TextWatcher {

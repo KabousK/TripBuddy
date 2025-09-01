@@ -9,6 +9,7 @@ public class SessionManager {
     private static final String K_LOGGED = "logged_in";
     private static final String K_EMAIL = "email";
     private static final String K_TRIP_COUNT = "trip_count";
+    private static final String K_TES_SCORE = "tes_score";
 
     // Last trip selections
     private static final String K_LAST_ACTIVITIES = "last_activities"; // comma-separated
@@ -30,7 +31,21 @@ public class SessionManager {
     public static void login(Context c, String email) {
         prefs(c).edit().putBoolean(K_LOGGED, true).putString(K_EMAIL, email).apply();
     }
-    public static void logout(Context c) { prefs(c).edit().putBoolean(K_LOGGED, false).apply(); }
+    public static void logout(Context c) {
+        // Clear session and account-linked data
+        prefs(c).edit()
+                .putBoolean(K_LOGGED, false)
+                .remove(K_EMAIL)
+                .remove(K_TRIP_COUNT)
+                .remove(K_TES_SCORE)
+                .apply();
+        // Clear last trip selections and repo-backed data
+        clearLastTrip(c);
+        com.example.formative_eduv4834254.data.TripRepository.clearTrips(c);
+        com.example.formative_eduv4834254.data.TripRepository.clearMemories(c);
+    new com.example.formative_eduv4834254.data.MemoryDao(c).clearAll();
+        // Note: app-level settings (theme/music/language) remain
+    }
     public static boolean isLoggedIn(Context c) { return prefs(c).getBoolean(K_LOGGED, false); }
     public static String getEmail(Context c) { return prefs(c).getString(K_EMAIL, ""); }
 
@@ -40,6 +55,14 @@ public class SessionManager {
         prefs(c).edit().putInt(K_TRIP_COUNT, n).apply();
     }
     public static int getTripCount(Context c) { return prefs(c).getInt(K_TRIP_COUNT, 0); }
+
+    // TES score
+    public static int getTesScore(Context c) { return prefs(c).getInt(K_TES_SCORE, 0); }
+    public static void addTes(Context c, int delta) {
+        if (delta == 0) return;
+        int next = Math.max(0, getTesScore(c) + delta);
+        prefs(c).edit().putInt(K_TES_SCORE, next).apply();
+    }
 
     // Last trip selections
     public static void saveLastTrip(Context c, String activitiesCsv, double visa, double transport, double meals, double custom) {
@@ -56,6 +79,16 @@ public class SessionManager {
     public static float getLastTransport(Context c) { return prefs(c).getFloat(K_LAST_TRANSPORT, 0f); }
     public static float getLastMeals(Context c) { return prefs(c).getFloat(K_LAST_MEALS, 0f); }
     public static float getLastCustom(Context c) { return prefs(c).getFloat(K_LAST_CUSTOM, 0f); }
+
+    public static void clearLastTrip(Context c) {
+        prefs(c).edit()
+                .remove(K_LAST_ACTIVITIES)
+                .remove(K_LAST_VISA)
+                .remove(K_LAST_TRANSPORT)
+                .remove(K_LAST_MEALS)
+                .remove(K_LAST_CUSTOM)
+                .apply();
+    }
 
     // Settings
     public static void setDarkTheme(Context c, boolean dark) { prefs(c).edit().putBoolean(K_THEME_DARK, dark).apply(); }

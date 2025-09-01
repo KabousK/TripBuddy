@@ -1,6 +1,9 @@
 package com.example.formative_eduv4834254.ui.gallery;
 
+import android.content.ContentResolver;
+import android.graphics.ImageDecoder;
 import android.net.Uri;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.formative_eduv4834254.R;
 import com.example.formative_eduv4834254.data.Memory;
 
+import java.io.IOException;
 import java.util.List;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.VH> {
@@ -36,8 +40,23 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.VH> {
 
     @Override public void onBindViewHolder(@NonNull VH h, int pos) {
         Memory m = data.get(pos);
-        h.iv.setImageURI(Uri.parse(m.photoUri));
         h.tv.setText(m.caption == null ? "" : m.caption);
+        Uri uri = m.photoUri == null ? null : Uri.parse(m.photoUri);
+        if (uri != null) {
+            try {
+                ContentResolver cr = h.itemView.getContext().getContentResolver();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    ImageDecoder.Source src = ImageDecoder.createSource(cr, uri);
+                    h.iv.setImageDrawable(ImageDecoder.decodeDrawable(src));
+                } else {
+                    h.iv.setImageURI(uri);
+                }
+            } catch (SecurityException | IOException e) {
+                h.iv.setImageResource(R.drawable.ic_menu_camera);
+            }
+        } else {
+            h.iv.setImageResource(R.drawable.ic_menu_camera);
+        }
     h.itemView.setOnClickListener(v -> click.onClick(m));
     h.itemView.setOnLongClickListener(v -> { if (longClick != null) longClick.onLongClick(m); return true; });
         h.iv.setAlpha(0f);

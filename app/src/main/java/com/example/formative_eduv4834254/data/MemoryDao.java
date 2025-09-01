@@ -33,6 +33,16 @@ public class MemoryDao {
         db.update(DbHelper.T_MEMORIES, cv, DbHelper.C_ID + "=?", new String[]{ String.valueOf(id)});
     }
 
+    public void delete(long id) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.delete(DbHelper.T_MEMORIES, DbHelper.C_ID + "=?", new String[]{ String.valueOf(id)});
+    }
+
+    public void clearAll() {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.delete(DbHelper.T_MEMORIES, null, null);
+    }
+
     public List<Memory> getAll() {
         SQLiteDatabase db = helper.getReadableDatabase();
         Cursor c = db.query(DbHelper.T_MEMORIES, null, null, null, null, null, DbHelper.C_CREATED + " DESC");

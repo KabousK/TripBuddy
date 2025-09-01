@@ -13,6 +13,8 @@ import androidx.navigation.Navigation;
 
 import com.example.formative_eduv4834254.R;
 import com.example.formative_eduv4834254.databinding.FragmentHomeBinding;
+import com.example.formative_eduv4834254.data.SessionManager;
+import com.example.formative_eduv4834254.util.TESManager;
 
 public class HomeFragment extends Fragment {
 
@@ -23,11 +25,19 @@ public class HomeFragment extends Fragment {
         HomeViewModel homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+                binding = FragmentHomeBinding.inflate(inflater, container, false);
+                View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+                // Welcome headline and stats
+                homeViewModel.getText().observe(getViewLifecycleOwner(), s -> {
+                        int trips = SessionManager.getTripCount(requireContext());
+                        int tes = new TESManager(requireContext()).getScore();
+                        binding.tvWelcome.setText(R.string.home_welcome);
+                        binding.tvStats.setText("Trips: " + trips + "   TES: " + tes);
+                });
+
+                // Optional: attempt to load user-provided logo named "Trip Buddy Logo.png" in app assets if present.
+                // If not present, preview uses launcher icon via tools:srcCompat in XML.
 
         // Button navigation
         binding.btnViewGallery.setOnClickListener(v ->

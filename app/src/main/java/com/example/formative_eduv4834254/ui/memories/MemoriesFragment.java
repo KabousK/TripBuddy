@@ -1,5 +1,6 @@
 package com.example.formative_eduv4834254.ui.memories;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import com.example.formative_eduv4834254.R;
 import com.example.formative_eduv4834254.data.Memory;
 import com.example.formative_eduv4834254.data.TripRepository;
 import com.example.formative_eduv4834254.data.MemoryDao;
+import com.example.formative_eduv4834254.util.TESManager;
 
 import java.io.IOException;
 
@@ -31,9 +33,14 @@ public class MemoriesFragment extends Fragment {
     private ImageView ivPreview;
     private EditText etCaption, etLocation, etMood;
 
-    private final ActivityResultLauncher<String> pickImage = registerForActivityResult(
-            new ActivityResultContracts.GetContent(), uri -> {
+    private final ActivityResultLauncher<String[]> pickImage = registerForActivityResult(
+            new ActivityResultContracts.OpenDocument(), uri -> {
                 if (uri != null) {
+                    // Persist read access so Gallery can load later
+                    try {
+                        requireContext().getContentResolver().takePersistableUriPermission(
+                                uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    } catch (SecurityException ignore) { }
                     photoUri = uri;
                     if (ivPreview != null) {
                         ivPreview.setImageURI(uri);
@@ -44,9 +51,13 @@ public class MemoriesFragment extends Fragment {
             }
     );
 
-    private final ActivityResultLauncher<String> pickAudio = registerForActivityResult(
-            new ActivityResultContracts.GetContent(), uri -> {
+    private final ActivityResultLauncher<String[]> pickAudio = registerForActivityResult(
+            new ActivityResultContracts.OpenDocument(), uri -> {
                 if (uri != null) {
+                    try {
+                        requireContext().getContentResolver().takePersistableUriPermission(
+                                uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    } catch (SecurityException ignore) { }
                     audioUri = uri;
                     Toast.makeText(requireContext(), getString(R.string.btn_pick_audio), Toast.LENGTH_SHORT).show();
                 }
@@ -63,8 +74,8 @@ public class MemoriesFragment extends Fragment {
     etLocation = root.findViewById(R.id.et_location);
     etMood = root.findViewById(R.id.et_mood);
 
-        root.findViewById(R.id.btn_pick_photo).setOnClickListener(v -> pickImage.launch("image/*"));
-        root.findViewById(R.id.btn_pick_audio).setOnClickListener(v -> pickAudio.launch("audio/*"));
+    root.findViewById(R.id.btn_pick_photo).setOnClickListener(v -> pickImage.launch(new String[]{"image/*"}));
+    root.findViewById(R.id.btn_pick_audio).setOnClickListener(v -> pickAudio.launch(new String[]{"audio/*"}));
 
         root.findViewById(R.id.btn_play).setOnClickListener(v -> play());
         root.findViewById(R.id.btn_pause).setOnClickListener(v -> pause());
@@ -92,6 +103,8 @@ public class MemoriesFragment extends Fragment {
     new MemoryDao(requireContext()).insert(m);
     // keep existing simple store for gallery fallback
     TripRepository.addMemory(requireContext(), m);
+    // TES: memory with photo event
+    new TESManager(requireContext()).addMemoryWithPhoto();
         Toast.makeText(requireContext(), "Memory saved.", Toast.LENGTH_SHORT).show();
         Navigation.findNavController(anchor).navigate(R.id.nav_gallery);
     }

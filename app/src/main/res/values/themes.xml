@@ -11,6 +11,8 @@
         <item name="colorOnSecondary">@color/white</item>
         <!-- App surface/background -->
         <item name="android:windowBackground">@color/tb_bg</item>
+        <item name="android:colorBackground">@color/tb_bg</item>
+        <item name="android:textColor">@color/tb_text</item>
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <item name="android:navigationBarColor">@color/tb_primary_dark</item>
 
@@ -25,6 +27,14 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.TripBuddy.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="Theme.TripBuddy.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.TripBuddy.AppBarOverlay" parent="ThemeOverlay.Material3.ActionBar" />
+    <style name="Theme.TripBuddy.PopupOverlay" parent="ThemeOverlay.Material3.Light" />
+
+    <!-- Typography tweaks -->
+    <style name="TextAppearance.TripBuddy.Body" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="fontFamily">sans-serif</item>
+    </style>
+    <style name="TextAppearance.TripBuddy.Title" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="fontFamily">sans-serif-medium</item>
+    </style>
 </resources>

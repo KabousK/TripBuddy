@@ -15,7 +15,7 @@
     <string name="menu_budget">Budget</string>
 
     <!-- Home/dashboard content -->
-    <string name="home_welcome">Welcome to TripBuddy Dashboard!</string>
+    <string name="home_welcome">Welcome!</string>
     <string name="btn_view_gallery">View Gallery</string>
     <string name="btn_plan_trip">Plan Trip</string>
     <string name="btn_create_memory">Create Memory</string>
@@ -43,6 +43,17 @@
     <string name="currency_format">R%.2f</string>
     <string name="toast_trip_saved">Trip saved.</string>
     <string name="toast_invalid_number">Please enter non-negative numbers.</string>
+    <string name="toast_trip_empty">Please enter some trip info before saving.</string>
+
+    <!-- Trips List & Details -->
+    <string name="menu_trips">Trips</string>
+    <string name="untitled_trip">Untitled trip</string>
+    <string name="trip_deleted">Trip deleted</string>
+    <string name="edit">Edit</string>
+    <string name="photos">Photos</string>
+    <string name="delete">Delete</string>
+    <string name="confirm_delete">Are you sure you want to delete this item?</string>
+    <string name="options">Options</string>
 
     <!-- Memories / Media -->
     <string name="memory_title">Create Memory</string>
@@ -57,4 +68,5 @@
     <string name="edit_memory">Edit Memory</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="sign_out">Sign out</string>
 </resources>

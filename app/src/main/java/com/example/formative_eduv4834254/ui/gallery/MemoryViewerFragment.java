@@ -39,9 +39,13 @@ public class MemoryViewerFragment extends Fragment {
             String a = args.getString("audioUri");
             String c = args.getString("caption");
             if (p != null) {
-                iv.setImageURI(Uri.parse(p));
-                iv.setAlpha(0f);
-                iv.animate().alpha(1f).setDuration(250).start();
+                try {
+                    iv.setImageURI(Uri.parse(p));
+                    iv.setAlpha(0f);
+                    iv.animate().alpha(1f).setDuration(250).start();
+                } catch (SecurityException e) {
+                    iv.setImageResource(R.drawable.ic_menu_camera);
+                }
             }
             if (c != null) tv.setText(c);
             if (a != null) audioUri = Uri.parse(a);

@@ -8,6 +8,7 @@ public class Trip {
     public String notes;
     public String startDate;
     public String endDate;
+    public String coverPhotoUri; // optional cover image for trip
 
     public List<ActivityItem> activities;
     public double visa;

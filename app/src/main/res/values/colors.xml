@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- TripBuddy brand palette -->
-    <color name="tb_primary">#5B3CC4</color>
-    <color name="tb_primary_dark">#3E28A3</color>
-    <color name="tb_accent">#7C4DFF</color>
-    <color name="tb_bg">#F6ECFF</color>
-    <color name="tb_text">#2A2A2A</color>
+    <color name="tb_primary">#FFB300</color> <!-- sunny amber -->
+    <color name="tb_primary_dark">#FFA000</color>
+    <color name="tb_accent">#4FC3F7</color> <!-- sky blue -->
+    <color name="tb_bg">#FFF8E1</color> <!-- warm light sand -->
+    <color name="tb_text">#263238</color>
 
     <!-- Legacy names mapped for theme compatibility -->
     <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#5B3CC4</color>
-    <color name="purple_700">#3E28A3</color>
-    <color name="teal_200">#7C4DFF</color>
-    <color name="teal_700">#5B3CC4</color>
+    <color name="purple_500">#FFB300</color>
+    <color name="purple_700">#FFA000</color>
+    <color name="teal_200">#4FC3F7</color>
+    <color name="teal_700">#FFB300</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

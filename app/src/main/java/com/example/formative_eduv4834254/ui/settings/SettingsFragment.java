@@ -11,6 +11,7 @@ import android.widget.Switch;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.os.LocaleListCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.formative_eduv4834254.R;
@@ -36,7 +37,12 @@ public class SettingsFragment extends Fragment {
             AppCompatDelegate.setDefaultNightMode(checked ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
         });
         swMusic.setOnCheckedChangeListener((b, checked) -> SessionManager.setMusicEnabled(requireContext(), checked));
-        root.findViewById(R.id.btnSaveLang).setOnClickListener(v -> SessionManager.setLanguage(requireContext(), (String) spLang.getSelectedItem()));
+        root.findViewById(R.id.btnSaveLang).setOnClickListener(v -> {
+            String lang = (String) spLang.getSelectedItem();
+            SessionManager.setLanguage(requireContext(), lang);
+            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(lang));
+            requireActivity().recreate();
+        });
         return root;
     }
 }

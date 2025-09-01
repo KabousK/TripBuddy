@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="tb_primary">#FFB300</color>
+    <color name="tb_primary_dark">#FFA000</color>
+    <color name="tb_accent">#4FC3F7</color>
+    <color name="tb_bg">#121212</color>
+    <color name="tb_text">#FFFFFF</color>
+    <color name="purple_200">#FFB300</color>
+    <color name="purple_500">#FFB300</color>
+    <color name="purple_700">#FFA000</color>
+    <color name="teal_200">#4FC3F7</color>
+    <color name="teal_700">#FFA000</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>

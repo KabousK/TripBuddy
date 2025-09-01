@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -21,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
+    private NavController navController;
+    private OnBackPressedCallback backToHomeCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,27 +32,39 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setSupportActionBar(binding.appBarMain.toolbar);
-        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Quick access to create a memory
-                NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_content_main);
-                navController.navigate(R.id.nav_memories);
-                Snackbar.make(view, "Create a new memory", Snackbar.LENGTH_SHORT)
-                        .setAnchorView(R.id.fab).show();
-            }
-        });
+    setSupportActionBar(binding.appBarMain.toolbar);
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
-        // Set top level destinations for the AppBar
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_registration, R.id.nav_home, R.id.nav_gallery, R.id.nav_memories, R.id.nav_budget)
+        // Make Home the only top-level destination so others show Up and Back goes to Home
+        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home)
                 .setOpenableLayout(drawer)
                 .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+    // Initialize header email and keep it fresh on destination changes
+    updateHeaderEmail();
+
+        // Intercept system Back (including gesture) on Gallery/Memories/Budget to return to Home
+        backToHomeCallback = new OnBackPressedCallback(false) {
+            @Override
+            public void handleOnBackPressed() {
+                boolean popped = navController.popBackStack(R.id.nav_home, false);
+                if (!popped) {
+                    navController.navigate(R.id.nav_home);
+                }
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, backToHomeCallback);
+
+        navController.addOnDestinationChangedListener((controller, destination, args) -> {
+            boolean inTopLevelNonHome = destination.getId() == R.id.nav_gallery
+                    || destination.getId() == R.id.nav_memories
+                    || destination.getId() == R.id.nav_budget;
+            backToHomeCallback.setEnabled(inTopLevelNonHome);
+            updateHeaderEmail();
+        });
     }
 
     @Override
@@ -65,14 +80,41 @@ public class MainActivity extends AppCompatActivity {
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.nav_settings);
             return true;
+        } else if (item.getItemId() == R.id.action_sign_out) {
+            com.example.formative_eduv4834254.data.SessionManager.logout(this);
+            com.google.android.material.navigation.NavigationView navigationView = findViewById(R.id.nav_view);
+            if (navigationView != null) {
+                View header = navigationView.getHeaderView(0);
+                if (header != null) {
+                    android.widget.TextView tvEmail = header.findViewById(R.id.textView);
+                    if (tvEmail != null) tvEmail.setText("");
+                }
+            }
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        androidx.navigation.NavOptions opts = new androidx.navigation.NavOptions.Builder()
+            .setPopUpTo(R.id.mobile_navigation, true)
+            .build();
+        navController.navigate(R.id.nav_registration, null, opts);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
+    NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+    return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    private void updateHeaderEmail() {
+        com.google.android.material.navigation.NavigationView navigationView = findViewById(R.id.nav_view);
+        if (navigationView == null) return;
+        View header = navigationView.getHeaderView(0);
+        if (header == null) return;
+        android.widget.TextView tvEmail = header.findViewById(R.id.textView);
+        if (tvEmail == null) return;
+        String email = com.example.formative_eduv4834254.data.SessionManager.getEmail(this);
+        tvEmail.setText(email == null ? "" : email);
     }
 }
